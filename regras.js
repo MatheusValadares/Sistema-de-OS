@@ -1,5 +1,14 @@
-
 // Initialize Firebase
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBMWwkfbvwJN961Mwz0fziOAC8OZX_UDKU",
+  authDomain: "sistema-de-os-311f3.firebaseapp.com",
+  projectId: "sistema-de-os-311f3",
+  storageBucket: "sistema-de-os-311f3.appspot.com",
+  messagingSenderId: "940142615925",
+  appId: "1:940142615925:web:13f1bff2dbf0a52c0d073c"
+}
+
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
