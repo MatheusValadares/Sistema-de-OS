@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OS inteligente</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+  <style>
+    .table-overflow {
+      max-height: 400px;
+      overflow-y: auto;
+    }
+
+    .alertas {
+      min-width: 30vw;
+      position: absolute;
+      bottom: 0px;
+      right: 10px;
+    }
+  </style>
+
+</head>
+
+<body class="bg-dark">
+
+
+
+  <!--                                               BARRA DE NAVEGAÇÃO                                                     -->
+
+
+
+
+  <nav class="navbar navbar-expand-lg bg-primary navbar-dark p-3 ">
+
+    <div class="navbar-brand font-weight-bold ml-5">OS inteligente</div>
+
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#myNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div id="myNav" class="collapse navbar-collapse justify-content-end ">
+      <ul class="nav navbar-nav mx-5 ">
+        <li class="nav-item h5 mx-2"><a href="#os" class="nav-link active" data-toggle="tab">Ordens de serviço</a></li>
+        <li class="nav-item h5 mx-2"><a href="#clientes" class="nav-link" data-toggle="tab">Clientes </a></li>
+        <li class="nav-item h5 mx-2"><a href="#colaboradores" class="nav-link" data-toggle="tab">Colaboradores</a></li>
+      </ul>
+    </div>
+
+  </nav>
+
+
+  <section class="tab-content">
+
+
+
+
+
+
+
+    <!--                                        CONTEÚDO DA SEÇÃO ORDENS DE SERVIÇO                          -->
+
+    <div id="os" class="tab-pane m-5 active">
+
+      <div>
+
+        <div class="d-flex flex-column align-items-center">
+
+          <div class="d-flex">
+            <button type="button" class="btn btn-secondary btn-lg mb-3 mr-2" role="button" data-toggle="collapse"
+              data-target="#filtroOs" onclick="criarCampoCliente()">Pesquisar</button>
+
+            <button type="button" class="btn btn-info btn-lg mb-3" data-toggle="modal" data-target="#criarOs"
+              onclick="atualizarSelecao()">Criar</button>
+
+          </div>
+
+          <div id="filtroOs" class="collapse" data-toggle="collapse">
+            <form class="form-row text-white font-weight-bold">
+              <div class="col-auto form-group">
+                <label for="numerodaos">Número da OS:</label>
+                <input id="numerodaos" class="form-control" type="number">
+              </div>
+              <div class="col-auto form-group">
+                <label for="status">Status:</label>
+                <select class="form-control" name="cliente" id="status">
+                  <option value=""></option>
+                  <option>Aberta</option>
+                  <option>Em Execução</option>
+                  <option>Pausada</option>
+                  <option>Fechada</option>
+                </select>
+              </div>
+
+              <div class="col-auto form-group">
+                <label for="filtroClienteOs">Cliente</label>
+                <select class="form-control" name="filtroClienteOs" id="filtroClienteOs">
+                  <option value=""></option>
+                </select>
+              </div>
+
+              <div class=" col-auto form-group">
+                <label for="filtroData">Por data</label>
+                <select class="form-control" name="data" id="filtroData" onchange="liberarCampos(this)">
+                  <option value="Todos">Todos</option>
+                  <option value="Data de Abertura">Data de Abertura</option>
+                  <option value="Data de Fechamento">Data de Fechamento</option>
+                </select>
+              </div>
+
+              <fieldset id="campoDatas" disabled>
+                <div id="corDatas" class="text-secondary form-row col-auto form-group">
+                  <div class="col-auto form-group">
+                    <label for="dataInicio">De:</label>
+                    <input class="form-control" id="dataInicio" type="date">
+                  </div>
+
+                  <div class="col-auto form-group">
+                    <label for="dataFim">Até:</label>
+                    <input class="form-control" id="dataFim" type="date">
+                  </div>
+                </div>
+              </fieldset>
+
+              <div class="col-auto mt-md-4 mt-sm-0 p-2 d-flex">
+                <div>
+                  <button type="button" role="button" class="btn btn-info form-control" data-toggle="collapse"
+                    data-target="#filtroOs" onclick="filtrarOs()">Filtrar</button>
+                </div>
+
+                <div class="px-2">
+                  <button type="button" class="btn btn-secondary form-control" data-toggle="collapse"
+                    data-target="#filtroOs" onclick="criarTabelaOs()">Mostrar todas</button>
+                </div>
+
+              </div>
+
+
+            </form>
+          </div>
+        </div>
+
+        <div id="criarOs" class="modal">
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content bg-primary font-weight-bold text-white">
+              <div class="modal-header">
+                <h1>ORDEM DE SERVIÇO:</h1>
+              </div>
+              <div class="modal-body">
+                <form class="form row">
+
+                  <div class="form-group col-6">
+                    <label for="">Cliente</label>
+                    <select id="addOsCliente" type="" class="form-control">
+                    </select>
+                  </div>
+
+                  <div class="form-group col-6">
+                    <label for="">Nível</label>
+                    <select id="addOsNivel" type="" class="form-control">
+                      <option>Urgente</option>
+                      <option>Risco Alto</option>
+                      <option>Risco Moderado</option>
+                      <option>Risco Baixo</option>
+                    </select>
+                  </div>
+
+                  <div class="form-group col-6">
+                    <label for="">Responsável</label>
+                    <select id="addOsResponsavel" type="" class="form-control">
+                    </select>
+                  </div>
+
+                  <div class="form-group col-6">
+                    <label for="">Problema</label>
+                    <select id="addOsProblema" type="" class="form-control">
+                      <option>Problema em porta</option>
+                      <option>Problema com imagem</option>
+                      <option>Problema em portão de garagem</option>
+                      <option>Problema em interfone</option>
+                      <option>Instalação</option>
+                      <option>Problema em equipamento</option>
+                      <option>Descrito no relato</option>
+                    </select>
+                  </div>
+
+                  <div class="form-group col-12">
+                    <label for="explicacao">Relato:</label>
+                    <textarea id="addOsRelato" class="form-control" id="explicacao" rows="3"></textarea>
+                  </div>
+
+                  <div class="form-group col-12 d-flex justify-content-end mb-0">
+
+
+                    <button type="button" class="btn btn-info mx-1" data-dismiss="modal"
+                      onclick="criarOs()">Criar</button>
+
+                    <button type=" button" class="btn btn-secondary mx-1" data-dismiss="modal"
+                      role="button">Fechar</button>
+
+                  </div>
+
+                </form>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+
+
+        <table class="table table-secondary table-bordered table-hover table-responsive-lg mb-0 table-overflow">
+          <thead class="thead-dark">
+            <tr>
+              <th>Número</th>
+              <th>Cliente</th>
+              <th>Nível</th>
+              <th>Problema</th>
+              <th>Abertura</th>
+              <th>Fechamento</th>
+              <th>Responsável</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="tabelaOs">
+            <!-- <tr data-toggle="modal" data-target="#dadosOs">
+              <td>000</td>
+              <td>Plaza Veneza</td>
+              <td>Urgente</td>
+              <td>Cerca Elétrica</td>
+              <td>28/05/2022 05:35:01</td>
+              <td></td>
+              <td>Matheus Valadares</td>
+              <td>Aberta</td>
+            </tr> -->
+          </tbody>
+        </table>
+
+        <div id="dadosOs" class="modal">
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content bg-primary font-weight-bold text-white">
+              <div class="modal-header">
+                <h1>DADOS DA OS:</h1>
+              </div>
+              <div class="modal-body">
+                <form>
+                  <fieldset class="form row " id="mudancaOs" disabled>
+                    <div class="form-group col-auto">
+                      <label for="">Número da OS</label>
+                      <input id="modalOsNumero" type="number" class="form-control" disabled>
+                    </div>
+                    <div class="form-group col-auto">
+                      <label for="">Cliente</label>
+                      <select id="modalOsCliente" type="" class="form-control">
+                      </select>
+                    </div>
+
+                    <div class="form-group col-auto">
+                      <label for="">Nível</label>
+                      <select id="modalOsNivel" type="" class="form-control">
+                        <option>Urgente</option>
+                        <option>Risco Alto</option>
+                        <option>Risco Moderado</option>
+                        <option>Risco Baixo</option>
+                      </select>
+                    </div>
+
+                    <div class="form-group col-auto">
+                      <label for="">Responsável</label>
+                      <select id="modalOsResponsavel" type="" class="form-control">
+                      </select>
+                    </div>
+
+                    <div class="form-group col-auto">
+                      <label for="">Problema</label>
+                      <select id="modalOsProblema" type="" class="form-control">
+                        <option>Problema em porta</option>
+                        <option>Problema com imagem</option>
+                        <option>Problema em portão de garagem</option>
+                        <option>Problema em interfone</option>
+                        <option>Instalação</option>
+                        <option>Problema em equipamento</option>
+                        <option>Descrito no relato</option>
+                      </select>
+                    </div>
+
+                    <div class="form-group col-auto">
+                      <label for="">Status</label>
+                      <select id="modalOsStatus" type="" class="form-control">
+                        <option>Fechada</option>
+                        <option>Em Execução</option>
+                        <option>Aberta</option>
+                        <option>Pausada</option>
+                      </select>
+                    </div>
+
+                    <div class="form-group col-auto">
+                      <label for="">Abertura</label>
+                      <input id="modalOsAbertura" type="datetime-local" class="form-control" disabled>
+                    </div>
+
+                    <div class="form-group col-auto">
+                      <label for="">Fechamento</label>
+                      <input id="modalOsFechamento" type="datetime-local" class="form-control" disabled>
+                    </div>
+
+                    <div class="form-group col-12">
+                      <label for="relato">Relato:</label>
+                      <textarea id="modalOsRelato" class="form-control" rows="3"></textarea>
+                    </div>
+
+                  </fieldset>
+
+                  <fieldset class="form row " id="mudancaOsSolucao" disabled>
+                    <div class="form-group col-12">
+                      <label for="solucao">Solução:</label>
+                      <textarea id="modalOsSolucao" class="form-control" rows="3"></textarea>
+                    </div>
+                  </fieldset>
+
+
+                  <div id="botoesDadosOs" class="form-group col-12 d-flex justify-content-end mb-0 p-0">
+
+                    <button id="botaoEditarOs" type="button" class="btn btn-info mx-1" role="button"
+                      onclick="editarOs()">Editar</button>
+
+                    <button id="botaoFinalizarOs" type="button" class="btn btn-info mx-1" role="button"
+                      onclick="finalizarOs()">Finalizar OS</button>
+
+                    <button type="button" class="btn btn-danger mx-1" data-dismiss="modal"
+                      onclick="deletarOs()">Excluir</button>
+
+                    <button type="button" class="btn btn-secondary mx-1" data-dismiss="modal"
+                      onclick="limparModalOs()">Fechar</button>
+
+                  </div>
+
+                </form>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+
+
+
+
+    </div>
+
+
+
+
+
+
+
+
+    <!--                                               CONTEÚDO DA SEÇÃO CLIENTES                                                    -->
+
+    <div id="clientes" class="tab-pane m-5">
+      <div>
+
+        <div class="container d-flex flex-column align-items-center">
+
+          <div class="d-flex">
+            <button type="button" class="btn btn-secondary btn-lg mb-3 mr-2" role="button" data-toggle="collapse"
+              data-target="#filtroCliente">Pesquisar</button>
+
+            <button type="button" class="btn btn-info btn-lg mb-3" data-toggle="modal"
+              data-target="#addCliente">Adicionar</button>
+          </div>
+
+
+          <div id="filtroCliente" class="collapse" data-toggle="collapse">
+            <form class="form-row text-white font-weight-bold">
+              <div class="col-auto form-group">
+                <label for="nomeCliente">Nome do cliente:</label>
+                <input id="nomeCliente" class="form-control" type="text">
+              </div>
+
+              <div class="col-auto mt-sm-4">
+                <div class="py-2">
+                  <button type="button" class="btn btn-info form-control" data-toggle="collapse"
+                    data-target="#filtroCliente" onclick="filtrarCliente()">Filtrar</button>
+                </div>
+              </div>
+
+              <div class="col-auto mt-sm-4">
+                <div class="py-2">
+                  <button type="button" class="btn btn-secondary form-control" data-toggle="collapse"
+                    data-target="#filtroCliente" onclick="criarTabelaClientes()">Mostrar
+                    todos</button>
+                </div>
+              </div>
+
+            </form>
+          </div>
+
+        </div>
+
+
+        <div id="addCliente" class="modal">
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content bg-primary font-weight-bold text-white">
+              <div class="modal-header">
+                <h1>Cliente:</h1>
+              </div>
+              <div class="modal-body">
+                <form class="form">
+
+                  <div class="form-group">
+                    <label for="">Nome</label>
+                    <input id="addClienteNome" type="text" class="form-control">
+                  </div>
+
+                  <div class="form-group">
+                    <label for="">Endereço</label>
+                    <input id="addClienteEndereco" type="text" class="form-control">
+                  </div>
+
+                  <div class="form-group col-12 d-flex justify-content-end mb-0">
+
+                    <button type="button" class="btn btn-info mx-1" data-dismiss="modal"
+                      onclick="criarCliente()">Adicionar</button>
+
+                    <button type="button" class="btn btn-secondary mx-1" data-dismiss="modal"
+                      role="button">Fechar</button>
+
+                  </div>
+
+                </form>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+
+        <div class="container table-overflow p-0">
+          <table class="table table-secondary table-bordered table-hover mb-0">
+            <thead class="thead-dark">
+              <tr>
+                <th>Nome</th>
+                <th>Endereço</th>
+              </tr>
+            </thead>
+            <tbody id="tabelaClientes">
+              <!-- <tr data-toggle="modal" data-target="#dadosCliente">
+                <td>Cliente Teste</td>
+                <td>Av. Cavalhada 100</td>
+              </tr> -->
+            </tbody>
+          </table>
+        </div>
+
+        <div id="dadosCliente" class="modal">
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content bg-primary font-weight-bold text-white">
+              <div class="modal-header">
+                <h1>DADOS DO CLIENTE:</h1>
+              </div>
+
+              <div class="modal-body">
+                <form class="form">
+                  <fieldset id="mudancaCliente" disabled>
+
+                    <div class="form-group">
+                      <label for="">Nome</label>
+                      <input id="modalClienteNome" type="text" class="form-control">
+                    </div>
+                    <div class="form-group">
+                      <label for="">Endereço</label>
+                      <input id="modalClienteEndereco" type="text" class="form-control">
+                    </div>
+                  </fieldset>
+
+                  <div id="botoesDadosCliente" class="form-group col-12 d-flex justify-content-end mb-0">
+
+                    <button id="botaoEditarCliente" type="button" class="btn btn-info mx-1"
+                      onclick="editarCliente()">Editar</button>
+
+                    <button type="button" class="btn btn-danger mx-1" data-dismiss="modal"
+                      onclick="deletarCliente()">Excluir</button>
+
+                    <button type="button" class="btn btn-secondary mx-1" data-dismiss="modal" role="button"
+                      onclick="limparModalClientes()">Fechar</button>
+
+                  </div>
+
+                </form>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+
+
+
+
+    </div>
+    </div>
+
+
+
+
+
+
+    <!--                                             CONTEÚDO DA SEÇÃO COLABORADORES                                                  -->
+
+    <div id="colaboradores" class="tab-pane m-5">
+      <div>
+
+        <div class="container d-flex flex-column align-items-center">
+
+          <div class="d-flex">
+            <button type="button" class="btn btn-secondary btn-lg mr-2 mb-3" role="button" data-toggle="collapse"
+              data-target="#filtroColaborador">Pesquisar</button>
+
+            <button type="button" class="btn btn-info btn-lg mb-3" data-toggle="modal"
+              data-target="#addColaborador">Adicionar</button>
+          </div>
+
+          <div id="filtroColaborador" class="collapse" data-toggle="collapse">
+            <form class="form-row text-white font-weight-bold">
+              <div class="col-auto form-group">
+                <label for="nomeColaborador">Nome do colaborador:</label>
+                <input id="nomeColaborador" class="form-control" type="text">
+              </div>
+
+              <div class="col-auto mt-sm-4">
+                <div class="py-2">
+                  <button type="button" class="btn btn-info form-control" data-toggle="collapse"
+                    data-target="#filtroColaborador" onclick="filtrarColaborador()">Filtrar</button>
+                </div>
+              </div>
+
+              <div class="col-auto mt-sm-4">
+                <div class="py-2">
+                  <button type="button" class="btn btn-secondary form-control" data-toggle="collapse"
+                    data-target="#filtroColaborador" onclick="criarTabelaColaboradores()">Mostrar
+                    todos</button>
+                </div>
+              </div>
+
+            </form>
+          </div>
+
+        </div>
+
+        <div id="addColaborador" class="modal">
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content bg-primary font-weight-bold text-white">
+              <div class="modal-header">
+                <h1>Colaborador:</h1>
+              </div>
+              <div class="modal-body">
+                <form class="form">
+
+                  <div class="form-group">
+                    <label for="">Nome completo</label>
+                    <input id="addColaboradorNome" type="text" required="required" class="form-control">
+                  </div>
+
+                  <div class="form-group">
+                    <label for="">Email</label>
+                    <input id="addColaboradorEmail" type="email" class="form-control">
+                  </div>
+
+                  <div class="form-group">
+                    <label for="">Senha</label>
+                    <input id="addColaboradorSenha" type="password" class="form-control">
+                  </div>
+
+                  <div class="form-group">
+                    <label for="">Função</label>
+                    <select id="addColaboradorFuncao" type="" class="form-control">
+                      <option value="administrador">administrador</option>
+                      <option value="operador">operador</option>
+                      <option value="tecnico">técnico</option>
+                    </select>
+                  </div>
+
+                  <div class="form-group col-12 d-flex justify-content-end mb-0">
+
+                    <button type="button" class="btn btn-info mx-1" onclick="criarColaborador()">Adicionar</button>
+
+                    <button type="button" class="btn btn-secondary mx-1" data-dismiss="modal"
+                      role="button">Fechar</button>
+
+                  </div>
+
+                </form>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+
+        <div class="container table-overflow p-0">
+          <table class="table table-secondary table-bordered table-hover mb-0">
+            <thead class="thead-dark">
+              <tr>
+                <th>Nome</th>
+                <th>Função</th>
+              </tr>
+            </thead>
+            <tbody id="tabelaColaboradores">
+              <!-- <tr data-toggle="modal" data-target="#dadosColaborador" onclick="criarModalColaborador(this)">
+                <td>Matheus Valadares Pereira</td>
+                <td>Operador</td>
+              </tr> -->
+            </tbody>
+          </table>
+        </div>
+
+        <div id="dadosColaborador" class="modal m-3">
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content bg-primary font-weight-bold text-white">
+              <div class="modal-header">
+                <h1>DADOS DO COLABORADOR:</h1>
+              </div>
+
+              <div class="modal-body">
+                <form class="form">
+                  <fieldset id="mudancaColaborador" disabled>
+
+                    <div class="form-group">
+                      <label for="">Nome</label>
+                      <input id="modalColaboradorNome" type="text" class="form-control">
+                    </div>
+
+                    <div class="form-group">
+                      <label for="">Email</label>
+                      <input id="modalColaboradorEmail" type="email" class="form-control">
+                    </div>
+
+                    <div class="form-group">
+                      <label for="">Senha</label>
+                      <input id="modalColaboradorSenha" type="password" class="form-control">
+                    </div>
+
+                    <div class="form-group">
+                      <label for="">Função</label>
+                      <select id="modalColaboradorFuncao" type="" class="form-control">
+                        <option value="Administrador">Administrador</option>
+                        <option value="Operador">Operador</option>
+                        <option value="Técnico">Técnico</option>
+                      </select>
+                    </div>
+
+                  </fieldset>
+
+                  <div id="botoesDadosColaborador" class="form-group col-12 d-flex justify-content-end mb-0 p-0">
+
+
+                    <button id="botaoEditarColaborador" type="button" class="btn btn-info mx-1" role="button"
+                      onclick="editarColaborador()">Editar</button>
+
+                    <button type="button" class="btn btn-danger mx-1" role="button" data-dismiss="modal"
+                      onclick="deletarColaborador()">Excluir</button>
+
+                    <button type="button" class="btn btn-secondary mx-1" data-dismiss="modal"
+                      onclick="limparModalColaboradores()">Fechar</button>
+
+                  </div>
+
+                </form>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+    </div>
+    </div>
+
+
+  </section>
+
+
+  <!-- <div id="alertaErro" class="alert alert-danger alertas">
+    <strong>Erro:</strong> Mensagem do erro!
+  </div> -->
+
+  <!-- <div id="alertaSucesso" class="alert alert-success alertas ">
+    Mensagem de sucesso!
+  </div> -->
+
+
+
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+    integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
+    integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
+    integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+    crossorigin="anonymous"></script>
+
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+
+  <script src="firebaseconfig.js"></script>
+  <script src="regras.js"></script>
+  <script src="interface.js"></script>
+
+</body>
+
+</html>
